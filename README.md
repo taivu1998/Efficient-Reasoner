@@ -7,13 +7,13 @@
   <img src="https://img.shields.io/badge/Tests-54%20Passing-brightgreen.svg" alt="Tests">
 </p>
 
-> **Research Goal:** Demonstrate that "Tool Use" and "Stopping Criteria" are learnable policies optimized via GRPO, enabling a 3B parameter model to dynamically allocate compute only when necessary—achieving the optimal balance between accuracy and computational efficiency.
+> **Research Goal:** Demonstrate that "Tool Use" and "Stopping Criteria" are learnable policies optimized via GRPO, enabling a 3B parameter model to dynamically allocate compute only when necessary, achieving the optimal balance between accuracy and computational efficiency.
 
 ---
 
 ## 🔬 Research Problem
 
-Current LLM agents suffer from **computational inelasticity**—they invoke expensive tool calls (like web search) regardless of question difficulty. This leads to:
+Current LLM agents suffer from **computational inelasticity**: they invoke expensive tool calls (like web search) regardless of question difficulty. This leads to:
 
 - **Wasted compute** on trivial questions that can be answered directly
 - **High latency** due to unnecessary tool invocations  
@@ -21,7 +21,7 @@ Current LLM agents suffer from **computational inelasticity**—they invoke expe
 
 ### Our Solution
 
-We treat the **"Decision to Search"** as a learnable policy optimized through **Group Relative Policy Optimization (GRPO)**. The model learns to answer directly when confident and invoke search tools only when necessary—naturally forming a **System 1 (fast) / System 2 (slow)** dual process architecture.
+We treat the **"Decision to Search"** as a learnable policy optimized through **Group Relative Policy Optimization (GRPO)**. The model learns to answer directly when confident and invoke search tools only when necessary, naturally forming a **System 1 (fast) / System 2 (slow)** dual process architecture.
 
 ---
 
