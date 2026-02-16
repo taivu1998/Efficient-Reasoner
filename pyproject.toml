@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "efficient-reasoning"
+version = "0.1.0"
+description = "Optimizing Agentic Compute-Accuracy Trade-offs via GRPO"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "EfficientReasoning Team"}
+]
+keywords = ["machine-learning", "reinforcement-learning", "grpo", "llm", "agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "numpy<2.0.0",
+    "torch>=2.4.0",
+    "transformers>=4.44.0",
+    "trl>=0.11.0",
+    "peft>=0.12.0",
+    "bitsandbytes",
+    "accelerate>=0.27.0",
+    "datasets",
+    "pyyaml",
+    "tqdm",
+    "scipy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "black",
+    "isort",
+]
+unsloth = [
+    "unsloth",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/EfficientReasoning-GRPO"
+Repository = "https://github.com/yourusername/EfficientReasoning-GRPO"
+
+[project.scripts]
+efficient-reasoning-train = "scripts.train:main"
+efficient-reasoning-inference = "scripts.inference:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "eval*", "scripts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.flake8]
+max-line-length = 100
+exclude = [".git", "__pycache__", "build", "dist", "*.egg-info"]

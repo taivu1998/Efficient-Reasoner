@@ -1,0 +1,22 @@
+# Core ML Libraries (without unsloth)
+numpy<2.0.0
+torch>=2.4.0
+transformers>=4.44.0
+trl>=0.11.0
+peft>=0.12.0
+bitsandbytes
+accelerate>=0.27.0
+
+# Data & Utilities
+datasets
+pyyaml
+tqdm
+scipy
+
+# Evaluation & Visualization
+matplotlib
+seaborn
+
+# Development
+flake8
+pytest

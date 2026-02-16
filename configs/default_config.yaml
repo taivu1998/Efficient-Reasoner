@@ -1,0 +1,87 @@
+project:
+  name: "EfficientReasoning-GRPO"
+  output_dir: "logs/"
+  seed: 42
+
+model:
+  name_or_path: "unsloth/Qwen2.5-3B-Instruct"
+  max_seq_length: 2048
+  load_in_4bit: true
+
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+
+data:
+  dataset_name: "hotpot_qa"
+  subset: "distractor"
+  max_samples: 1000
+  # Fallback to synthetic data if dataset fails to load
+  fallback_on_error: true
+
+training:
+  learning_rate: 2.0e-5
+  batch_size: 4
+  gradient_accumulation_steps: 4
+  num_generations: 8      # G in GRPO (Group size)
+  max_steps: 500
+  beta: 0.04              # KL penalty (keep low to allow policy drift)
+  logging_steps: 10
+  save_steps: 100
+  save_total_limit: 3      # Keep only last N checkpoints
+  # Learning rate scheduler
+  lr_scheduler: "cosine"  # Options: linear, cosine, constant, polynomial, inverse_sqrt
+  warmup_ratio: 0.1       # Warmup ratio (0.1 = 10% of max_steps)
+  # Checkpoint resumption
+  resume_from_checkpoint: null  # Set to checkpoint path to resume, or null for new training
+  # Logging
+  report_to: "none"       # Options: none, wandb, tensorboard, mlflow
+
+# Tool Configuration for native GRPO support
+tools:
+  enabled: true           # Enable tool execution during GRPO training
+  max_tool_calls: 5       # Maximum tool calls per response
+  timeout_seconds: 30     # Tool execution timeout
+
+# SFT Training Configuration (Phase 1)
+sft:
+  learning_rate: 2.0e-5
+  batch_size: 4
+  gradient_accumulation_steps: 2
+  num_epochs: 3
+  warmup_ratio: 0.1
+  max_seq_length: 1024
+  # Checkpoint resumption
+  resume_from_checkpoint: null
+
+# Reward Function Configuration
+# Formula: R = Correctness + Format - Cost + Bonus
+# - Correctness: +correctness_weight for correct, wrong_penalty for incorrect
+# - Format: +format_weight for valid XML, format_penalty for invalid
+# - Cost: -efficiency_penalty per tool call (only for EXECUTED calls)
+# - Bonus: +efficient_bonus for correct answer without any tool calls
+rewards:
+  correctness_weight: 1.0     # Reward for correct answer
+  wrong_penalty: -0.5         # Penalty for wrong answer
+  format_weight: 0.1          # Reward for valid XML format
+  format_penalty: -0.5        # Penalty for invalid format
+  efficiency_penalty: 0.05    # Cost per EXECUTED tool call (-0.05 per search)
+  incomplete_call_penalty: -0.2  # Penalty for calls without observations
+  efficient_bonus: 0.1       # Bonus for correct answer without tool calls
+
+# Inference Configuration
+inference:
+  max_steps: 5            # Maximum agentic steps
+  max_new_tokens: 256     # Max tokens per generation step
+  temperature: 0.7        # Sampling temperature (0 to disable)
+  top_p: 0.9             # Nucleus sampling
+  repetition_penalty: 1.1
+
+# Evaluation Configuration
+evaluation:
+  max_samples: 100
+  max_steps: 5
+  output_dir: "eval/results"
+  cache_results: true     # Cache results for faster re-runs
